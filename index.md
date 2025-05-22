@@ -17,41 +17,17 @@ math: mathjax
 
 ## Deep Neural Networks
 
-<style scoped>
-    .imgcontainer {
-        display: flex;
-        flex-direction: row;
-        height: 300px;
-    }
-
-    .taggedimg {
-        height: 300px;
-        text-align: center;
-    }
-</style>
-
 Deep neural networks have been widely used to extract higher-level features from the raw data and provide users with explicitly desicions.
 
-<div class="imgcontainer">
-    <div class="taggedimg">
-        <img src="pic/facerec.png">
-        <p>Face Recognition</p>
-    </div>
-    <div class="taggedimg">
-        <img src="pic/imagecls.png">
-        <p>Image Classification</p>
-    </div>
-    <div class="taggedimg">
-        <img src="pic/autodrive.png">
-        <p>Autonomous Driving</p>
-    </div>
-</div>
+![](dnn.png)
 
 ## Commercial DNN Services
 
 Commercial DNN Services combine the computing power of the cloud with AI to offer business advantages, including quicker processing and cost savings.
 
-![w:500](pic/aimarket.png) ![w:500](pic/aws.png)
+<center>
+    <img src="commercialdnn.png" width=960>
+</center>
 
 Commercial DNN Services often access a large number of devices, and a successful attack against one of them exposes all to potential threats.
 
@@ -59,11 +35,11 @@ Commercial DNN Services often access a large number of devices, and a successful
 
 Adversarial attacks add subtle perturbations to images to deceive the target model.
 
-![](pic/advattack.png)
+![](adversarialattack.png)
 
 ## Adversarial Attacks against Commercial DNN Services
 
-![](pic/attackcom.png)
+![](attackagainstcommercial.png)
 
 - **Black box manner**: use APIs to query model and obtain hard-label outputs.
 - **Strict query limits**: high costs and time consumption, more subceptible to defense.
@@ -78,16 +54,37 @@ Various attacks have been proposed, which mainly fail into three categories: **t
 | Query-based    | BA[ICLR'18], HSJA[S&P'20], AHA[ICCV'21], SurFree[CVPR'21], RamBoAttack[NDSS'22]                 |
 | Hybrid         | BiasedBA[ICCV'19], BAODS[NeurIPS'20], QEBA-I[CVPR'20], Prism[AISec'19], HybridAttack[USENIX'20] |
 
-## Existing Black-box Attacks
+## Drawback of existing Black-box Attacks
 
-### Transfer-based
-Low success rate ![h:100 right](pic/transferbased.png)
+<style scoped>
+    .horizontal {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .vertical {
+        display: flex;
+        flex-direction: column;
+    }
+    .margintop {
+        margin-top: 2rem;
+    }
+</style>
 
-### Query-based
-Large number of queries ![h:100 right](pic/querybased.png)
-
-### Hybrid
-Large number of queries, as substitute models cannot be fully exploited.
+<div class="horizontal">
+    <div class="vertical">
+        <h3>Transfer-based</h3>
+        <p>Low success rate</P>
+        <h3>Query-based</h3>
+        <p>Large number of queries</P>
+        <h3>Hybrid</h3>
+        <p>Large number of queries, as substitute models cannot be fully exploited.</P>
+    </div>
+    <div class="vertical margintop">
+        <img src="transferbased.png">
+        <img src="hybrid.png">
+    </div>
+</div>
 
 ## Goal and Challenges
 
@@ -104,7 +101,7 @@ Challenges:
     }
 </style>
 
-![bg right:35% w:400](pic/advregion.png)
+<img src="region.png" align=right width=550>
 
 ### Adversarial region
 Adversarial region $O$ denotes that the inside examples can deceive the model.
@@ -117,25 +114,51 @@ We aim to sample in the embedding space and craft **multiple examples**. It is m
 
 ## Transferability of White-box Perturbations (Cont'd)
 
-<div>
-    <h3>Justification</h3>
-    By integrating the dispersed sampling technique, the MI-FGSM significantly improves the attack success rate by an average of 9.6% using only 2.1 average queries.
-    <img src="pic/just.png" align=right width=600>
-</div>
+<img src="justification.png" align=right width=700>
+
+### Justification
+By integrating the dispersed sampling technique, the MI-FGSM significantly improves the attack success rate by an average of **9.6%** using only **2.1** average queries.    
 
 ## Overview of DSA
 
 4-step attack workflow to exploit the transferability of white-box perturbations.
 
-![](pic/dsa.png)
+![](overview.png)
 
 ## Module #1 Image Augmentation
 
+
 ### Varying the distribution or magnitude of perturbations enables different transferability.
+
+<style scoped>
+    li {
+        font-size: 0.85rem;
+        margin-left: -20px;
+    }
+</style>
+
+<img src="module1.png" align=right width=550>
 
 - Carry out **image augmentation** (e.g. rotation, color jittering, and noise addition) on the original image.
 - Image augmentation causes a **change** in the gradient of the neural network **backpropagation**, which changes the direction of perturbation optimization.
 - White-box attacks typically perform the above optimization **multiple times**, **accumulating** such changes.
 
-![](pic/advregion.png)
+## Module #2 Perturbation Constraint Generation
 
+<style scoped>
+    .container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+</style>
+
+### Dynamically establish constraints for each white-box perturbation through a sampling process
+
+<div class="container">
+    <img src="module2-left.png" width=525>
+    <img src="module2-right.png" width=525>
+</div>
+
+- Based on a **truncated normal distribution**
+- **Gradually decrease** the upper bound
